@@ -1,0 +1,108 @@
+<div class="page-wrap height-100 mat-bg-primary">
+  <div class="session-form-hold">
+    <md-progress-bar mode="determinate" class="session-progress"></md-progress-bar>
+    <md-card>
+      <md-card-content>
+        <div class="text-center pb-1">
+          <img src="assets/images/img-logo2.png" alt="" class="app-logo">
+          <p class="text-muted">會員註冊</p>
+        </div>
+        <form #signupForm="ngForm" (ngSubmit)="signup()">
+          <div class="">
+            <md-input-container class="full-width">
+              <input
+                mdInput
+                type="text"
+                name="name"
+                required
+                [(ngModel)]="model.name"
+                #name="ngModel"
+                placeholder="名稱"
+                value="">
+            </md-input-container>
+            <small 
+              *ngIf="name.errors && (name.dirty || name.touched) && (name.errors.required)" 
+              class="form-error-msg"> 請輸入您的名稱。 </small>
+          </div>
+
+          <div class="">
+            <md-input-container class="full-width">
+              <input
+                mdInput
+                type="email"
+                name="email"
+                required
+                [(ngModel)]="model.email"
+                #email="ngModel"
+                placeholder="電郵地址"
+                pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
+                value="">
+            </md-input-container>
+            <small 
+              *ngIf="email.errors && (email.dirty || email.touched) && (email.errors.required)" 
+              class="form-error-msg"> 請輸入您的電郵地址。 </small>
+
+              <small 
+                *ngIf="email.errors && (email.dirty || email.touched) && (email.errors.pattern)" 
+                class="form-error-msg"> 請輸入有效的電子郵件地址。 </small>
+          </div>
+
+          <div class="">
+            <md-input-container class="full-width">
+              <input 
+                type="password"
+                name="password"
+                required
+                mdInput
+                appEqualValidator="confirmPassword"
+                reverse="true"
+                [(ngModel)]="model.password"
+                #password="ngModel"
+                placeholder="密碼" 
+                value="">
+            </md-input-container>
+            <small 
+              *ngIf="password.errors && (password.dirty || password.touched) && (password.errors.required)" 
+              class="form-error-msg"> 請輸入您的密碼。 </small>
+          </div>
+          
+          <div class="">
+            <md-input-container class="full-width">
+              <input
+                type="password"
+                name="confirmPassword"
+                required
+                mdInput
+                appEqualValidator="password"
+                [(ngModel)]="model.confirmPassword"
+                #confirmPassword="ngModel"
+                placeholder="確認密碼"
+                value="">
+            </md-input-container>
+            <small 
+              *ngIf="confirmPassword.errors && (confirmPassword.dirty || confirmPassword.touched)" 
+              class="form-error-msg"> 密碼不正確。 </small>
+          </div>
+          
+          <!--<div class="pb-1">
+            <md-checkbox
+              name="isAgreed"
+              required
+              [(ngModel)]="signupData.isAgreed"
+              #isAgreed="ngModel" 
+              class="pb-1">I have read and agree to the terms of service.</md-checkbox>
+
+              <small 
+                *ngIf="!isAgreed.value && (isAgreed.dirty || isAgreed.touched)" 
+                class="form-error-msg"> You must agree to the terms and conditions </small>
+          </div>-->
+
+          <button md-raised-button class="mat-primary full-width mb-1" [disabled]="signupForm.invalid">註冊</button>
+          <div class="text-center">
+            <a [routerLink]="['/sessions/signin']" class="mat-primary text-center full-width">已有一個帳戶? 在此登錄。</a>
+          </div>
+        </form>
+      </md-card-content>
+    </md-card>
+  </div>
+</div>

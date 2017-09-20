@@ -1,0 +1,244 @@
+<md-card class="p-0">
+    <md-card-title class="mat-bg-primary m-0">
+        <div class="card-title-text">
+            <span>集運單號： {{ consignmentBill.number }}</span>
+            
+            <span fxFlex></span>
+            
+            <button class="card-control" md-icon-button
+                 [routerLink]="['/consignment-bills']">
+                <md-icon>close</md-icon>
+            </button>
+            <md-divider></md-divider>
+        </div>
+    </md-card-title>
+    
+    <md-card-content class="mt-1">
+        <form #consignmentBillForm="ngForm">
+            <div fxLayout="row" fxLayoutWrap="wrap">
+                <div fxFlex="100" class="pr-1">
+                    <ngx-datatable
+                      class="material ml-0 mr-0"
+                      [rows]="consignmentBill.waybills"
+                      [columnMode]="'flex'"
+                      [headerHeight]="50"
+                      [footerHeight]="0"
+                      [rowHeight]="'auto'">
+                      
+                        <ngx-datatable-column [width]="30" name="" [flexGrow]="1" *ngIf="!consignmentBill._id">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                <md-checkbox  class="md-primary" [checked]="row?.selected"                                 (change)="selectWaybill($event, row?._id)">
+                                </md-checkbox>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        
+                        <ngx-datatable-column name="運單號碼" [flexGrow]="1">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                              {{ row?.number }}
+                            </ng-template>
+                        </ngx-datatable-column>
+                      
+                        <!--<ngx-datatable-column name="收件日期" [flexGrow]="1">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                              {{ convertToDate(row?.received_datetime) | date : 'dd/MM/yyyy' }}
+                            </ng-template>
+                        </ngx-datatable-column>-->
+                        
+                        <ngx-datatable-column name="重量" [flexGrow]="1">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                              {{ row?.freight_weight }}
+                            </ng-template>
+                        </ngx-datatable-column>
+                        
+                        <ngx-datatable-column name="運單備注" [flexGrow]="1">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                              {{ row?.description }}
+                            </ng-template>
+                        </ngx-datatable-column>
+                        
+                    </ngx-datatable>
+                    
+                    <div fxLayout="row" fxLayoutAlign="space-around center"  class="m-1">
+                        <span>總重量： {{consignmentBill.total_weight}} kg</span>
+                        <span>首重： {{consignmentBill.first_weight}} kg</span>
+                        <span>續重： {{consignmentBill.follow_weight}} kg</span>
+                    </div>
+                    
+                    
+                    <div class="pb-1">
+                        <md-select 
+                            placeholder="發貨運輸"
+                            [(ngModel)]="consignmentBill.price_list_id" 
+                            name="price_list_id"
+                            *ngIf="priceLists.length && !consignmentBill.checked"
+                            required
+                            (ngModelChange)="changePriceList()">
+                          
+                          <md-option *ngFor="let priceList of priceLists" [value]="priceList._id">
+                            {{priceList.name}}
+                          </md-option>
+                        </md-select>
+                        
+                        <md-input-container class="full-width"
+                            *ngIf="consignmentBill.checked">
+                            <input
+                            mdInput
+                            name="price_list_name"
+                            [readonly]="true"
+                            placeholder="發貨運輸"
+                            value="{{consignmentBill.price_list.name}}">
+                        </md-input-container>
+                    </div>
+                    
+                    <!--<div class="pb-1">
+                        <md-select 
+                            placeholder="自取點地址"
+                            [(ngModel)]="consignmentBill.collect_address_id" 
+                            name="collect_address_id"
+                            *ngIf="collectAddresses.length && !consignmentBill._id">
+                          
+                          <md-option *ngFor="let collectAddress of collectAddresses" [value]="collectAddress._id">
+                            {{collectAddress.name}}
+                          </md-option>
+                        </md-select>
+                        
+                        <md-input-container class="full-width"
+                            *ngIf="consignmentBill._id && consignmentBill.collect_address">
+                            <input
+                            mdInput
+                            name="collect_address_name"
+                            [readonly]="true"
+                            placeholder="自取點地址"
+                            value="{{consignmentBill.collect_address.name}}">
+                        </md-input-container>
+                    </div>-->
+                    
+                    <div class="pb-1">
+                        <md-select 
+                            placeholder="送貨地址"
+                            [(ngModel)]="consignmentBill.shipping_address_id" 
+                            name="shipping_address_id"
+                            *ngIf="addresses.length && consignmentBill.shipping_address_id && !consignmentBill.checked"
+                            (ngModelChange)="changeShippingAddress()" fxFlex>
+                          
+                          <md-option *ngFor="let addresss of addresses" [value]="addresss._id">
+                            {{addresss.address_type.name}} - {{addresss.address}}
+                          </md-option>
+                        </md-select>
+                    </div>
+                
+                    <div class="pb-1">
+                        <md-input-container class="full-width">
+                            <input
+                            mdInput
+                            name="consignee_address"
+                            [(ngModel)]="consignmentBill.consignee_address"
+                            [readonly]="true"
+                            #consignee_address="ngModel"
+                            placeholder="送貨地址"
+                            value="">
+                        </md-input-container>
+                    </div>
+                    
+                    <div class="pb-1">
+                        <div fxLayout="row" class="m-1">
+                            <span fxFlex="30">基本運費：</span>
+                            <span fxFlex>{{consignmentBill.price_list.currency}} {{ consignmentBill.freight }}</span>
+                        </div>
+                            
+                        <div fxLayout="row" class="m-1">
+                            <span fxFlex="30">附加費：</span>
+                            <span fxFlex>{{consignmentBill.price_list.currency}} {{ consignmentBill.extra }}</span>
+                        </div>
+                        
+                        <div fxLayout="row" class="m-1">
+                            <span fxFlex="30">折扣：</span>
+                            <span fxFlex>{{consignmentBill.price_list.currency}} {{ consignmentBill.discount }}</span>
+                        </div>
+                        
+                        <div fxLayout="row" class="m-1" *ngIf="consignmentBill.freight_collect > 0">
+                            <span fxFlex="30">總運費：(自取到付)</span>
+                            <span fxFlex>{{consignmentBill.price_list.currency}} {{ consignmentBill.freight_collect }}</span>
+                        </div>
+                        
+                        <div fxLayout="row" class="m-1" *ngIf="consignmentBill.freight_prepaid > 0">
+                            <span fxFlex="30">總運費</span>
+                            <span fxFlex>{{consignmentBill.price_list.currency}} {{ consignmentBill.freight_prepaid }}</span>
+                        </div>
+                        
+                        <div fxLayout="row" class="m-1" *ngIf="consignmentBill.freight_prepaid > 0">
+                            <span fxFlex="30">淘寶店連結：</span>
+                            <span fxFlex>按此<a href="{{consignmentBill.price_list.taobao_link}}" target="_blank">付款鍵</a>，購買 {{ consignmentBill.freight_prepaid }} 個1元 = {{ consignmentBill.freight_prepaid }} 元運費。</span>
+                        </div>
+                        
+                        <div fxLayout="row" class="m-1" *ngIf="consignmentBill._id && consignmentBill.freight_prepaid > 0 && consignmentBill.price_list.taobao_link && !consignmentBill.checked">
+                            
+                            <span fxFlex>請按(
+                                    <a href="{{consignmentBill.price_list.taobao_link}}" target="_blank">
+                                        付款鍵
+                                    </a>
+                                    )付款，再到下面填寫淘寳訂單編號，以便工作人員核實付款。</span>
+                        </div>
+                    </div>
+                    
+                    <div class="pb-1" *ngIf="consignmentBill._id && consignmentBill.freight_prepaid > 0 && consignmentBill.price_list.taobao_link">
+                        <md-input-container class="full-width">
+                            <input
+                            mdInput
+                            name="payment_ref"
+                            [(ngModel)]="consignmentBill.payment_ref"
+                            [readonly]="consignmentBill.checked"
+                            #payment_ref="ngModel"
+                            placeholder="訂單編號"
+                            [maxLength]="64"
+                            value="">
+                        </md-input-container>
+                        <a href="assets/images/payment_ref.jpg" target="_blank">
+                            *什麼是訂單編號?
+                        </a>
+                    </div>
+                    
+                    <div class="pb-1" *ngIf="consignmentBill._id">
+                        <md-input-container class="full-width">
+                            <input
+                            mdInput
+                            name="comments"
+                            [(ngModel)]="consignmentBill.comments"
+                            [readonly]="consignmentBill.checked"
+                            #comments="ngModel"
+                            placeholder="備註"
+                            [maxLength]="64"
+                            value="">
+                        </md-input-container>
+                    </div>
+                
+                    <div class="pb-1" *ngIf="consignmentBill.shipment_datetime">
+                        <md-input-container class="full-width">
+                            <input
+                            mdInput
+                            name="shipment_datetime"
+                            [(ngModel)]="consignmentBill.shipment_datetime"
+                            [readonly]="true"
+                            #shipment_datetime="ngModel"
+                            placeholder="發貨日期"
+                            value="">
+                        </md-input-container>
+                    </div>
+                </div>
+            </div>
+            
+        </form>
+        
+    </md-card-content>
+    
+    <md-card-actions class="m-1">
+        <button md-raised-button class="mat-primary mb-1" [disabled]="consignmentBillForm.invalid || saving || !consignmentBill.freight" *ngIf="!consignmentBill.checked" (click)="save()">
+            <span *ngIf="consignmentBill._id || consignmentBill.collect_address_id"> 完成 </span>
+            <span *ngIf="!consignmentBill._id"> 確認 </span>
+        </button>
+        
+        <span fxFlex></span>
+        
+        <button md-raised-button class="mat-warn mb-1" *ngIf="consignmentBill._id && !consignmentBill.checked" (click)="delete()"> 刪除 </button>
+    </md-card-actions>
+</md-card>

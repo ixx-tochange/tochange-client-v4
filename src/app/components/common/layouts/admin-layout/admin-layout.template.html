@@ -1,0 +1,68 @@
+<md-sidenav-container class="app-side-nav-container">
+  <!-- Main side navigation -->
+  <md-sidenav #sidenav [opened]="!isNavOver()" [mode]="isNavOver() ? 'over' : 'side'" class="sidebar-panel">
+    <div id="scroll-area" class="navigation-hold" fxLayout="column">
+      <!--<div class="branding mat-bg-primary">
+        <img src="assets/images/logo.png" alt="" class="app-logo">
+        <img src="assets/images/logo-text.png" alt="" class="app-logo-text">
+      </div>-->
+      <div class="branding">
+        <img src="assets/images/img-logo2.png" alt="" class="app-logo">
+      </div>
+      <div class="app-user">
+        <div class="app-user-photo">
+          <img src="assets/images/avatars/{{ me.avatar }}" alt="">
+        </div>
+        
+        <span class="app-user-name">
+          <md-icon class="icon-xs text-muted">lock</md-icon> 
+          {{ me.name }} ({{ me._id }})
+        </span>
+      </div>
+      <navigation></navigation>
+    </div>
+  </md-sidenav>
+
+  <!-- Top Bar -->
+  <!-- Template reference variables of Left sidebar and Right notification is supplied -->
+  <!-- Listens language change event -->
+  <!--<topbar 
+  [sidenav]="sidenav" 
+  [notificPanel]="notificationPanel"
+  (onLangChange)="translate.use($event)"></topbar>-->
+  <topbar 
+  [sidenav]="sidenav" 
+  (onLangChange)="translate.use($event)"></topbar>
+  <!-- App content -->
+  <app-breadcrumb #breadcrumb></app-breadcrumb>
+  
+  <div class="rightside-content-hold">
+    <div fxLayout="row">
+        <div fxFlex>
+            <router-outlet></router-outlet>
+        </div>
+      
+        <div fxFlex.gt-md="220px" fxHide fxShow.gt-md>
+            <md-card>
+              <md-card-content>
+                <ng2-adsense
+                    [adSlot]="1711197381"
+                    [display]="'inline-block'"
+                    [width]="160"
+                    [height]="600">
+                </ng2-adsense>
+                        
+              </md-card-content>
+            </md-card>
+        </div>
+    </div>
+    
+  </div>
+  
+  <!-- Notificaation bar -->
+  <!--<md-sidenav #notificationPanel mode="over" class="" align="end">
+    <div class="navigation-hold" fxLayout="column">
+      <app-notifications [notificPanel]="notificationPanel"></app-notifications>
+    </div>
+  </md-sidenav>-->
+</md-sidenav-container>

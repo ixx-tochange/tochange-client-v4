@@ -1,0 +1,32 @@
+<div fxLayout="row" fxLayoutWrap>
+    <div fxFlex="100" fxFlex.gt-sm="50" fxFlex.sm="100"
+        *ngFor="let address of addresses; let i = index" [attr.data-index]="i">
+        
+        <md-card class="p-0">
+          <md-card-title class="m-0">
+            <div class="card-title-text">
+                <md-icon *ngIf="address.address_type_id == 268" color="primary">home</md-icon>
+                <md-icon *ngIf="address.address_type_id != 268" color="primary">location_city</md-icon>
+                <span>{{ address.address_type.name }}</span>
+                <span fxFlex></span>
+
+                <button class="card-control" color="primary" md-icon-button
+                     [routerLink]="['/addresses', address._id]">
+                    <md-icon>edit</md-icon>
+                </button>
+            </div>
+            <md-divider></md-divider>
+          </md-card-title>
+          
+          <md-card-content>
+            {{ address.address }}
+          </md-card-content>
+        </md-card>
+    </div>
+
+    <div fxFlex="100">
+        <button md-raised-button class="mat-primary mb-1" [routerLink]="['/addresses', 0]"> 新增收貨地址 </button>
+    </div>
+</div>
+
+      

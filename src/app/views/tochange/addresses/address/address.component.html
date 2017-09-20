@@ -1,0 +1,120 @@
+<md-card class="p-0">
+    <md-card-title class="mat-bg-primary m-0">
+        <div class="card-title-text">
+            <span>{{ address.address_checking }}</span>
+            
+            <span fxFlex></span>
+            
+            <button class="card-control" md-icon-button
+                 [routerLink]="['/addresses']">
+                <md-icon>close</md-icon>
+            </button>
+            <md-divider></md-divider>
+        </div>
+    </md-card-title>
+    
+    <md-card-content class="mt-1">
+        <form #addressForm="ngForm">
+            <div fxLayout="row" fxLayoutWrap="wrap">
+                <div fxFlex="100" class="pr-1">
+                    <div class="pb-1 pt-1">
+                        <md-select 
+                            placeholder="國家/城市"
+                            [(ngModel)]="address.country_id" 
+                            name="country_id"
+                            *ngIf="countries.length"
+                            required>
+                          
+                          <md-option *ngFor="let country of countries" [value]="country._id">
+                            {{country.name}}
+                          </md-option>
+                        </md-select>
+                    </div>
+                
+                    <div class="pb-1 pt-1">
+                        <md-select 
+                            placeholder="地址類別"
+                            [(ngModel)]="address.address_type_id" 
+                            name="address_type_id"
+                            *ngIf="addressTypes.length"
+                            required>
+                          
+                          <md-option *ngFor="let addressType of addressTypes" [value]="addressType._id">
+                            {{addressType.name}}
+                          </md-option>
+                        </md-select>
+                    </div>
+
+                    <div class="pb-1">
+                        <md-input-container class="full-width">
+                            <input
+                            mdInput
+                            name="short_address"
+                            required
+                            [(ngModel)]="address.address"
+                            [readonly]="address._id"
+                            #short_address="ngModel"
+                            placeholder="收貨地址"
+                            value="">
+                        </md-input-container>
+                        
+                        <small 
+                          *ngIf="short_address.errors && (short_address.dirty || short_address.touched) && (short_address.errors.required)" 
+                          class="form-error-msg"> 請輸入您的中文地址，如使用英文會被刪除。 </small>
+                    </div>
+                    
+                    <div class="pb-1">
+                        <md-input-container class="full-width">
+                            <input
+                            mdInput
+                            name="receiver_name"
+                            required
+                            [(ngModel)]="address.receiver_name"
+                            #receiver_name="ngModel"
+                            placeholder="收件人姓名"
+                            value="">
+                        </md-input-container>
+                        
+                        <small 
+                          *ngIf="receiver_name.errors && (receiver_name.dirty || receiver_name.touched) && (receiver_name.errors.required)" 
+                          class="form-error-msg"> 請輸入收件人姓名 </small>
+                    </div>
+                    
+                    <div class="pb-1">
+                        <md-input-container class="full-width">
+                            <input
+                            mdInput
+                            name="receiver_phone"
+                            required
+                            [(ngModel)]="address.receiver_phone"
+                            #receiver_phone="ngModel"
+                            placeholder="收件人電話"
+                            value="">
+                        </md-input-container>
+                        
+                        <small 
+                          *ngIf="receiver_phone.errors && (receiver_phone.dirty || receiver_phone.touched) && (receiver_phone.errors.required)" 
+                          class="form-error-msg"> 請輸入收件人電話 </small>
+                    </div>
+                </div>
+            </div>
+            
+            <div fxLayout="row" fxLayoutWrap="wrap">
+                <p *ngIf="address.address_checking=='未驗證'">** 閣下新增地址有待驗證，請於下一個工作天到"收貨地址"內查詢審核進度及進行付款。**</p>
+            </div>
+            
+
+        </form>
+        
+    </md-card-content>
+    
+    <md-card-actions class="m-1">
+        <button md-raised-button class="mat-primary mb-1" [disabled]="address.invalid || saving" (click)="save()"
+        *ngIf="address.address_checking=='未驗證'"> 完成 </button>
+        
+        <span fxFlex></span>
+        
+        <button md-raised-button class="mat-warn mb-1" *ngIf="address._id && address.address_checking=='已驗證'" (click)="deactivate()"> 放棄使用 </button>
+        <button md-raised-button class="mat-warn mb-1" *ngIf="address._id && address.address_checking=='未驗證'" (click)="delete()"> 刪除 </button>
+    </md-card-actions>
+</md-card>

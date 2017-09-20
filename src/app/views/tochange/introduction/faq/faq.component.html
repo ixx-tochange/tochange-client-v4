@@ -1,0 +1,13 @@
+<div fxLayout="row" fxLayoutWrap="wrap">
+  <div 
+  fxFlex="100">
+    <md-card class="default" *ngFor="let faq of faqs; let i = index" [attr.data-index]="i">
+      
+      <md-card-title>{{ i+1 }}. {{ faq['name']}}</md-card-title>
+      <md-card-content>
+        <p [innerHTML]="faq.content">
+        </p>
+      </md-card-content>
+    </md-card>
+  </div>
+</div>

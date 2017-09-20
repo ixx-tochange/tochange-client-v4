@@ -1,0 +1,14 @@
+<div fxLayout="row" fxLayoutWrap="wrap">
+  <div 
+  fxFlex="100">
+    <md-card class="default" *ngFor="let article of articles; let i = index" [attr.data-index]="i">
+      
+      <md-card-title>{{ article['title']}}</md-card-title>
+      <md-card-subtitle>{{ article['publish_datetime'] | date }}</md-card-subtitle>
+      <md-card-content>
+        <p [innerHTML]="article.content">
+        </p>
+      </md-card-content>
+    </md-card>
+  </div>
+</div>

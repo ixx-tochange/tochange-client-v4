@@ -1,0 +1,79 @@
+<md-tab-group fxFlex="100">
+    <md-tab label="已到物流中轉站">
+        <div class="m-1"  *ngIf="arrived_waybills.length!=0">因要配合新的海關政策，請用<中文>簡單地填寫資料，如: 衣服，皮鞋，手飾 .. 這樣除了我們可用作報關，同時也方便各會員知悉那些商品已到達我們物流中轉站。</div>
+        
+        <div class="m-1" *ngIf="arrived_waybills.length==0">當你在購物網站成功訂購後，而貨物尚未運送到我們中轉站前，可預先把 "運單號碼"及"物流公司"新增到我們系統內，這不但可以提高倉儲收發包裹管理，更可有效地處理你的包裹。</div>
+          
+        <div fxLayout="row" fxLayoutWrap="wrap">
+            <div fxFlex="100" fxFlex.gt-sm="50" fxFlex.sm="100"
+                *ngFor="let waybill of arrived_waybills; let i = index" [attr.data-index]="i">
+                <md-card class="p-0">
+                  
+                  <md-card-title class="m-0">
+                    <div class="card-title-text">
+                        <md-checkbox class="md-primary" [(ngModel)]="waybill.selected" 
+                            [disabled]="!waybill.description || !waybill.received_datetime">                            
+                        </md-checkbox>
+                        
+                        <span>&nbsp;{{ waybill.logistics_company.name }} [ {{ waybill.number }} ]</span>
+                        <span fxFlex></span>
+                        
+                        <button class="card-control" color="primary" md-icon-button
+                             [routerLink]="['/waybills', waybill._id]">
+                            <md-icon>edit</md-icon>
+                        </button>
+                    </div>
+                  </md-card-title>
+                  
+                  
+                  <md-card-content>
+                    
+                    <span *ngIf="waybill.received_datetime">{{ convertToDate(waybill.received_datetime) | date: 'dd/MM/yyyy'}}</span><br>
+                    
+                    <span *ngIf="waybill.freight_weight">{{ waybill.freight_weight }} kg </span>
+                    <span *ngIf="waybill.length>0">/ {{ waybill.length }}x{{ waybill.width }}x{{ waybill.height }}cm</span><br>
+                                        
+                  
+                    <span [innerHTML]="waybill.description"></span>
+                    <span [hidden]="waybill.description" style="color: red">請先用<中文>簡單地填寫資料，才能組合出貨。</span>
+                  </md-card-content>
+                </md-card>
+            </div>
+        </div>
+        
+        <div fxFlex="100">
+            <button md-raised-button class="mat-primary mb-1" (click)="selectAll()" *ngIf="arrived_waybills.length!=0"> 全選 </button>
+            &nbsp;
+            <button md-raised-button class="mat-primary mb-1" (click)="grouping()" *ngIf="arrived_waybills.length!=0"> 確認組合 </button>
+        </div>
+    </md-tab>
+    <md-tab label="未到物流中轉站">
+        <div fxLayout="row" fxLayoutWrap="wrap">
+            <div fxFlex="100" fxFlex.gt-sm="50" fxFlex.sm="100"
+                *ngFor="let waybill of waiting_waybills; let i = index" [attr.data-index]="i">
+                <md-card class="p-0">
+                  
+                  <md-card-title class="m-0">
+                    <div class="card-title-text">
+                        <span fxFlex></span>
+                        
+                        <button class="card-control" color="primary" md-icon-button
+                             [routerLink]="['/waybills', waybill._id]">
+                            <md-icon>edit</md-icon>
+                        </button>
+                    </div>
+                  </md-card-title>
+                  
+                  
+                  <md-card-content>
+                    <h5>{{ waybill.logistics_company.name }}</h5>
+                    <span>{{ waybill.number }}</span>
+                    
+                    <p [innerHTML]="waybill.description"></p>
+                    <p [hidden]="waybill.description" style="color: red">請先用<中文>簡單地填寫資料，才能組合出貨。</p>
+                  </md-card-content>
+                </md-card>
+            </div>
+        </div>
+    </md-tab>
+</md-tab-group>

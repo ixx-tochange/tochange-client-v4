@@ -1,0 +1,103 @@
+<md-card class="p-0">
+    <md-card-title class="mat-bg-primary m-0">
+        <div class="card-title-text">
+            <span>快遞單號： {{ waybill.number }}</span>
+            
+            <span fxFlex></span>
+            
+            <button class="card-control" md-icon-button
+                 [routerLink]="['/waybills']">
+                <md-icon>close</md-icon>
+            </button>
+            <md-divider></md-divider>
+        </div>
+    </md-card-title>
+    
+    <md-card-content class="mt-1">
+        <p class="mt-1" *ngIf="!waybill._id">
+            ** 如要新增或認領貨物，請逐一輸入運單號碼。**
+            <a [routerLink]="['/introduction', 'faq']"><< 按此說明 >></a>
+        </p>
+       
+        <p class="mt-1" *ngIf="waybill.received_datetime">
+            入倉日期： {{ convertToDate(waybill.received_datetime) | date: 'dd/MM/yyyy'}}
+        </p>
+
+        <form #waybillForm="ngForm">
+            <div fxLayout="row" fxLayoutWrap="wrap">
+                <div fxFlex="100" class="pr-1">
+                    <div class="pb-1">
+                        <md-input-container class="full-width">
+                            <input
+                            mdInput
+                            name="number"
+                            required
+                            [(ngModel)]="waybill.number"
+                            (ngModelChange)="waybill.logistics_company_id = null;"
+                            [readonly]="waybill._id"
+                            #number="ngModel"
+                            placeholder="快遞單號"
+                            value="">
+                        </md-input-container>
+                        
+                        <small 
+                          *ngIf="number.errors && (number.dirty || number.touched) && (number.errors.required)" 
+                          class="form-error-msg"> 請輸入快遞單號 </small>
+              
+                    </div>
+                    
+                    <div class="pb-1">
+                        <md-select 
+                            placeholder="物流公司"
+                            [(ngModel)]="waybill.logistics_company_id" 
+                            name="logistics_company_id"
+                            *ngIf="logisticsCompanies.length && !waybill._id"
+                            required
+                            (ngModelChange)="onLogisticsCompanyChange($event)">
+                          
+                          <md-option *ngFor="let logisticsCompany of logisticsCompanies" [value]="logisticsCompany._id">
+                            {{logisticsCompany.name}}
+                          </md-option>
+                        </md-select>
+                        
+                        <md-input-container class="full-width"
+                            *ngIf="waybill._id">
+                            <input
+                            mdInput
+                            name="logistics_company_name"
+                            [readonly]="true"
+                            placeholder="物流公司"
+                            value="{{waybill.logistics_company.name}}">
+                        </md-input-container>
+                    </div>
+                        
+                    <div class="pb-1">
+                        <md-input-container class="full-width">
+                            <input
+                            mdInput
+                            name="description"
+                            required
+                            [(ngModel)]="waybill.description"
+                            #description="ngModel"
+                            placeholder="運單備註"
+                            value="">
+                        </md-input-container>
+                        
+                        <small 
+                          class="form-error-msg"> ** 因要配合新的海關政策，請用<中文>簡單地填寫資料，如: 衣服，皮鞋，手飾 .. 這樣除了我們可用作報關，同時也方便各會員知悉那些商品已到達我們物流中轉站。 ** </small>
+                    </div>
+                </div>
+            </div>
+            
+        </form>
+        
+    </md-card-content>
+    
+    <md-card-actions class="m-1">
+        <button md-raised-button class="mat-primary mb-1" [disabled]="waybillForm.invalid || saving" (click)="save()"> 完成 </button>
+        
+        <span fxFlex></span>
+        
+        <button md-raised-button class="mat-warn mb-1" *ngIf="waybill._id && !waybill.received_datetime" (click)="delete()"> 刪除 </button>
+    </md-card-actions>
+</md-card>

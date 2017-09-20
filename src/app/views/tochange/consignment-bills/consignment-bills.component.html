@@ -1,0 +1,43 @@
+<div fxLayout="row" fxLayoutWrap="wrap">
+    <div fxFlex="100" fxFlex.gt-sm="50" fxFlex.sm="100"
+        *ngFor="let consignmentBill of consignmentBills; let i = index" [attr.data-index]="i">
+        <md-card class="p-0">
+          
+          <md-card-title class="m-0">
+            <div class="card-title-text">
+                <span>組合日期： {{ convertToDate(consignmentBill.consignment_datetime) | date: 'dd/MM/yyyy' }}</span>
+                <span fxFlex></span>
+                
+                <button class="card-control" color="primary" md-icon-button
+                     [routerLink]="['/consignment-bills', consignmentBill._id]">
+                    <md-icon>edit</md-icon>
+                </button>
+            </div>
+          </md-card-title>
+          
+          
+          <md-card-content>
+                總重量： {{ consignmentBill.total_weight | number }} kg<br>
+                訂單編號： {{ consignmentBill.payment_ref }}
+                <span *ngIf="!consignmentBill.payment_ref && consignmentBill.freight_prepaid>0">未付款</span>
+                <span style="color: red;" *ngIf="!consignmentBill.payment_ref && consignmentBill.freight_collect>0">自取到付</span><br>
+                發貨日期： {{ convertToDate(consignmentBill.shipment_datetime) | date: 'dd/MM/yyyy' }}<br>
+                集運單號： {{ consignmentBill.number }}<br>
+            
+          </md-card-content>
+        </md-card>
+    </div>
+</div>
+    
+    
+<div fxLayout="row" fxLayoutWrap="wrap">
+    <h2 *ngIf="consignmentBills.length === 0">如你沒有看到任何集運記錄，可能你尚未合併你的運單，你可以到貨物清單內進行合併出貨。</h2>
+    
+    <p>注意事項:</p>
+    <ul>
+        <li>1. 截單時間為星期一至五，及星期日的下午六點 ( 星期六及假期前夕不發貨 )，如在六點前已付款，可在出貨日當天發貨。如在下午六時後付款，會改為在下一個發貨日出貨。</li>
+        <li>2. 為讓操作更順利，不論在任何時間，所有已付運費的會員，我們會在發貨當日的下午六時一次過在系統上轉為做已發貨。</li>
+        <li>3. 往香港的快遞單號，出貨後，會顯示於最尾位置。各會員，可於辦公時間內跟我們電郵查詢 info@tochange.com.hk，或可致電 3184 0300與我們聯絡。</li>
+        <li>4. 如選用自取點取貨，到達後會以電話通知，免費存倉期可達七天，七天過後，每天港幣五元存倉費用。取貨時，請提供手機號碼及快遞單號核對取件。</li>
+    </ul>
+</div>
